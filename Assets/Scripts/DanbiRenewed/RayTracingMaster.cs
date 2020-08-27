@@ -1866,16 +1866,18 @@ public class RayTracingMaster : MonoBehaviour {
         float cx = ProjectedCamParams.PrincipalPoint.x;
         float cy = ProjectedCamParams.PrincipalPoint.y;
 
-        float aspect = alpha / beta;
+        
+        float aspectImage = (float)CurrentScreenResolutions.x / (float)CurrentScreenResolutions.y;
 
         Matrix4x4 projectionMatrix = GetOpenGLProjectionMatrix(alpha, beta, cx, cy, near, far);
-        Matrix4x4 projectionMatrixFOV = GetOpenGLProjectionMatrixFOV(CurrentScreenResolutions.y, aspect, beta, near, far);
+        Matrix4x4 projectionMatrixFOV = GetOpenGLProjectionMatrixFOV((float)CurrentScreenResolutions.y, aspectImage, beta, near, far);
                 
 
         Debug.Log($"new projection Matrix -> \n{projectionMatrix}");
         Debug.Log($"new projection Matrix FOV -> \n{projectionMatrixFOV}");
                 // Apply the created projection matrix.
         RTShader.SetMatrix("_Projection", projectionMatrix);
+        //RTShader.SetMatrix("_Projection", projectionMatrixFOV);
         RTShader.SetMatrix("_CameraInverseProjection", projectionMatrix.inverse);
         // Apply other rsrcs for undistortion.
         RTShader.SetInt("_UndistortMode", (int)UndistortMode);
@@ -2436,7 +2438,7 @@ public class RayTracingMaster : MonoBehaviour {
     static Matrix4x4 GetOpenGLProjectionMatrixFOV(float ScreenHeight, float aspect, float beta, float near, float far)
     {
         Matrix4x4 PerspK = new Matrix4x4();
-        float fov = 2 * Mathf.Tan((ScreenHeight / 2) / beta);
+        float fov = 2 * Mathf.Atan((ScreenHeight / 2) / beta);
 
         float A = (near + far) / (far - near);
         float B = -2 * (near * far) / (far - near);
