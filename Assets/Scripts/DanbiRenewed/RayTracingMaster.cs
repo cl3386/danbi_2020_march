@@ -1823,11 +1823,11 @@ public class RayTracingMaster : MonoBehaviour {
         // .. Construct the projection matrix from the calibration parameters
         //    and the field-of-view of the current main camera.
         //    test1
-        float left = 0.0f;
-        float right = (float)CurrentScreenResolutions.x; // MOON: change it to Projector Width
-        float top = 0.0f;
-        // MOON: change it to Projector Height // y axis goes downward.
-        float bottom = (float)CurrentScreenResolutions.y;
+        //float left = 0.0f;
+        //float right = (float)CurrentScreenResolutions.x; // MOON: change it to Projector Width
+        //float top = 0.0f;
+        //// MOON: change it to Projector Height // y axis goes downward.
+        //float bottom = (float)CurrentScreenResolutions.y;
 
 
         // test2
@@ -1844,10 +1844,11 @@ public class RayTracingMaster : MonoBehaviour {
         
 
         // http://ksimek.github.io/2013/06/03/calibrated_cameras_in_opengl/
-        Matrix4x4 openGLNDCMatrix = GetOrthoMatOpenGLGPU(left, right, bottom, top, near, far);
-        Debug.Log($"openGL NDC Matrix -> \n{openGLNDCMatrix}");
+        //Matrix4x4 openGLNDCMatrix = GetOrthoMatOpenGLGPU(left, right, bottom, top, near, far);
+        //Debug.Log($"openGL NDC Matrix -> \n{openGLNDCMatrix}");
 
         // OpenCV 함수를 이용하여 구한 카메라 켈리브레이션 K Matrix.
+        
         Matrix4x4 openGLKMatrix = GetOpenGL_KMatrix(ProjectedCamParams.FocalLength.x, ProjectedCamParams.FocalLength.y,
                                                     ProjectedCamParams.PrincipalPoint.x, ProjectedCamParams.PrincipalPoint.y,
                                                     near, far);
@@ -1859,9 +1860,21 @@ public class RayTracingMaster : MonoBehaviour {
         //Matrix4x4 OpenGLToOpenCV = GetOpenGLToOpenCV(CurrentScreenResolutions.y);
         //Debug.Log($"OpenGL to OpenCV Matrix -> \n{OpenGLToOpenCV}");
 
-        Matrix4x4 projectionMatrix = openGLNDCMatrix /** OpenGLToOpenCV*/ * openGLKMatrix; // * OpenGLToUnity;
+         //Matrix4x4 projectionMatrix = openGLNDCMatrix /** OpenGLToOpenCV*/ * openGLKMatrix; // * OpenGLToUnity;
+        float alpha = ProjectedCamParams.FocalLength.x;
+        float beta = ProjectedCamParams.FocalLength.y;
+        float cx = ProjectedCamParams.PrincipalPoint.x;
+        float cy = ProjectedCamParams.PrincipalPoint.y;
+
+        float aspect = alpha / beta;
+
+        Matrix4x4 projectionMatrix = GetOpenGLProjectionMatrix(alpha, beta, cx, cy, near, far);
+        Matrix4x4 projectionMatrixFOV = GetOpenGLProjectionMatrixFOV(CurrentScreenResolutions.y, aspect, beta, near, far);
+                
+
         Debug.Log($"new projection Matrix -> \n{projectionMatrix}");
-        // Apply the created projection matrix.
+        Debug.Log($"new projection Matrix FOV -> \n{projectionMatrixFOV}");
+                // Apply the created projection matrix.
         RTShader.SetMatrix("_Projection", projectionMatrix);
         RTShader.SetMatrix("_CameraInverseProjection", projectionMatrix.inverse);
         // Apply other rsrcs for undistortion.
@@ -2393,13 +2406,55 @@ public class RayTracingMaster : MonoBehaviour {
   void UndistortImage() {
   }
 
-  //
-  // | |
-  // | |
-  // | |
-  // | |
-  //
-  static Matrix4x4 GetOpenGL_KMatrix(float alpha, float beta, float x0, float y0,/* float imgHeight,*/ float near, float far) {
+    //
+    // | |
+    // | |
+    // | |
+    // | |
+    //
+
+    static Matrix4x4 GetOpenGLProjectionMatrix(float alpha, float beta, float cx, float cy, float near, float far)
+    {
+        //cf: http://kgeorge.github.io/2014/03/08/calculating-opengl-perspective-matrix-from-opencv-intrinsic-matrix
+
+        Matrix4x4 PerspK = new Matrix4x4();
+        float A = (near + far) / (far - near);
+        float B = -2* (near * far) / (far-near);
+
+        PerspK[0, 0] = alpha/cx;
+        PerspK[1, 1] = beta/cy;
+        
+        PerspK[2, 2] = A;
+        PerspK[2, 3] = B;
+        PerspK[3, 2] = -1.0f;
+
+        return PerspK;
+
+
+    }
+
+    static Matrix4x4 GetOpenGLProjectionMatrixFOV(float ScreenHeight, float aspect, float beta, float near, float far)
+    {
+        Matrix4x4 PerspK = new Matrix4x4();
+        float fov = 2 * Mathf.Tan((ScreenHeight / 2) / beta);
+
+        float A = (near + far) / (far - near);
+        float B = -2 * (near * far) / (far - near);
+
+        PerspK[0, 0] = 1 / (aspect * Mathf.Tan(fov / 2) );
+        
+        PerspK[1, 1] = 1 / Mathf.Tan(fov / 2); 
+
+        PerspK[2, 2] = A;
+        PerspK[2, 3] = B;
+        PerspK[3, 2] = -1.0f;
+
+        return PerspK;
+
+
+    }
+
+    static Matrix4x4 GetOpenGL_KMatrix(float alpha, float beta, float x0, float y0,/* float imgHeight,*/ float near, float far) {
     Matrix4x4 PerspK = new Matrix4x4();
     float A = -(near + far);
     float B = near * far;

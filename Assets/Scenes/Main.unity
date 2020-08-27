@@ -6884,12 +6884,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.05715772
       objectReference: {fileID: 0}
-    - target: {fileID: 1299591436129281245, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 7327831008496099706, guid: e72cb2fb612e810449a73420e242ef5e,
-        type: 3}
     - target: {fileID: 1299591436217030654, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -6900,6 +6894,12 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1299591436129281245, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 7327831008496099706, guid: e72cb2fb612e810449a73420e242ef5e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78ffbf9fee7fe5847a92078b872cdbc5, type: 3}
 --- !u!1 &1943912616 stripped
@@ -7247,6 +7247,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 1.3350128
       objectReference: {fileID: 0}
+    - target: {fileID: 1299591435988384303, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
+        type: 3}
+      propertyPath: far clip plane
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1299591435988384299, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -7276,16 +7281,6 @@ PrefabInstance:
         type: 3}
       propertyPath: param.lowRangeFromCamera
       value: -1.29907
-      objectReference: {fileID: 0}
-    - target: {fileID: 1299591436545780758, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 154.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1299591436545780758, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 1299591436217030654, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
         type: 3}
@@ -7326,6 +7321,16 @@ PrefabInstance:
         type: 3}
       propertyPath: ProjectedCamParams.PrincipalPoint.x
       value: 2031.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 1299591436545780758, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 154.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1299591436545780758, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 241192248639579994, guid: 78ffbf9fee7fe5847a92078b872cdbc5,
         type: 3}
